@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+	 <!-- GESTOR DE VERSIONES DE SPRING BOOT -->
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>3.3.4</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+
+	<groupId>edu.uclm.es</groupId>
+	<artifactId>gramola</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
+	<name>gramola</name>
+	<description>Gramola para TySWeb</description>
+	<url/>
+	<licenses>
+		<license/>
+	</licenses>
+	<developers>
+		<developer/>
+	</developers>
+	<scm>
+		<connection/>
+		<developerConnection/>
+		<tag/>
+		<url/>
+	</scm>
+
+	
+	<dependencies>
+		<!-- NÚCLEO WEB: Desarrollo de APIs REST y gestión de peticiones HTTP -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		
+		
+        <!-- PERSISTENCIA JPA: Gestión de base de datos MySQL mediante Hibernate -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+
+		<!-- SERVIDOR TOMCAT-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- SPRING TEST: Utilidades para pruebas unitarias e integración (JUnit) -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- DRIVER MYSQL: Conector oficial para la base de datos de producción -->
+		<dependency>
+    		<groupId>mysql</groupId>
+    		<artifactId>mysql-connector-java</artifactId>
+    		<version>8.0.33</version>
+		</dependency>
+
+		<!-- STRIPE SDK: Integración con la pasarela de pagos oficial -->
+		<dependency>
+			<groupId>com.stripe</groupId>
+			<artifactId>stripe-java</artifactId>
+			<version>29.5.0</version>
+		</dependency>
+
+		<!-- JSON: Librería para el parseo y construcción manual de objetos JSON -->
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20160810</version>
+		</dependency>
+
+		<!-- H2 DATABASE: Base de datos en memoria para ejecución rápida de tests -->
+		<dependency>
+  			<groupId>com.h2database</groupId>
+  			<artifactId>h2</artifactId>
+  			<scope>runtime</scope>
+		</dependency>
+
+		<!-- SERVICIO DE CORREO: Soporte para envío de emails mediante SMTP (Gmail) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+        
+        <!-- JAKARTA ACTIVATION: Requisito técnico para el correcto funcionamiento de JavaMail -->
+        <dependency>
+            <groupId>com.sun.activation</groupId>
+            <artifactId>jakarta.activation</artifactId>
+            <version>2.0.1</version>
+        </dependency>
+
+		<!-- SELENIUM: Motor de automatización de navegador para pruebas funcionales -->
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>4.25.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- WEBDRIVER MANAGER: Configuración automática de los drivers (Chrome) para Selenium -->
+        <dependency>
+            <groupId>io.github.bonigarcia</groupId>
+            <artifactId>webdrivermanager</artifactId>
+            <version>5.9.2</version>
+            <scope>test</scope>
+        </dependency>
+		
+	</dependencies>
+	
+	<build>
+		<plugins>
+			<!-- MAVEN PLUGIN: Empaquetado ejecutable y soporte para Spring Boot -->
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
