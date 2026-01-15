@@ -1,0 +1,486 @@
+/**
+ * ESTILOS PARA EL PANEL DE GESTIÓN DEL PROPIETARIO.
+ * * Define la apariencia de la "sala de control" del bar. Utiliza una estética
+ * de modo oscuro profesional con elementos translúcidos para permitir que el
+ * fondo musical sea visible sin sacrificar la legibilidad.
+ */
+
+/* --- VARIABLES DE TEMA --- */
+:host {
+  --primary: #1DB954; 
+  --primary-dark: #1aa34a;
+  --bg-dark: #121212;
+  --panel-bg: rgba(24, 24, 24, 0.75); /* Fondo oscuro semitransparente */
+  --text-main: #ffffff;
+  --text-muted: #b3b3b3;
+  --border: rgba(255, 255, 255, 0.1);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+  --input-bg: #ffffff;
+}
+
+/* --- LAYOUT GENERAL Y FONDO --- */
+.music-page {
+  min-height: 100vh;
+  color: var(--text-main);
+  font-family: 'Inter', system-ui, sans-serif;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/**
+ * CAPA DE FONDO FIJA.
+ * Mantiene la coherencia visual con el resto de la aplicación usando
+ * la imagen corporativa desaturada.
+ */
+.background-overlay {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background-image: url('../../assets/fondo.jpg');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.25;
+  filter: grayscale(100%) contrast(120%);
+  z-index: -1;
+  position: fixed; 
+}
+
+.main-layout {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+/* --- 1. HEADER CENTRADO --- */
+    .app-header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 20px 30px;
+      border-radius: 16px;
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
+      box-shadow: var(--glass-shadow);
+      position: sticky;
+      top: 15px;
+      z-index: 100;
+    }
+
+    .brand { display: flex; align-items: center; gap: 20px; }
+    .logo-icon { color: var(--primary); background: rgba(255, 255, 255, 0.1); padding: 10px; border-radius: 50%; display: flex; }
+    
+
+/* Animación sutil del logo */
+.pulse-anim svg {
+  animation: spin-slow 10s linear infinite;
+}
+@keyframes spin-slow { 100% { transform: rotate(360deg); } }
+
+    h1 { 
+      margin: 0; 
+      font-size: 2.2rem; 
+      font-weight: 900; 
+      letter-spacing: 1px; 
+      text-transform: uppercase;
+      text-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    }
+
+/* Indicador de estado de conexión */
+.status-badge {
+  font-size: 0.7rem;
+  color: var(--primary);
+  background: rgba(29, 185, 84, 0.15);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-left: 2px;
+}
+
+.user-controls {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+
+.btn-add {
+  background: var(--primary);
+  border: none;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  color: #000;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-add:hover { background: #fff; }
+
+.btn-logout {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.2);
+  color: var(--text-muted);
+  padding: 8px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center;
+}
+.btn-logout:hover {
+  border-color: #fff;
+  color: #fff;
+  background: rgba(255,255,255,0.1);
+}
+
+/* --- ALERTAS --- */
+.alert-banner {
+  background: rgba(220, 38, 38, 0.2);
+  border: 1px solid #ef4444;
+  color: #fff;
+  padding: 12px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  font-weight: 500;
+  backdrop-filter: blur(5px);
+}
+
+.error-banner {
+  background: rgba(220, 38, 38, 0.2);
+  border: 1px solid #ef4444;
+  color: #fff;
+}
+
+/* --- 2. SECCIÓN HERO (BOTÓN ABRIR GRAMOLA) --- */
+.hero-action-area {
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  margin: 30px 0 50px 0; 
+  width: 100%;
+  padding: 0;
+}
+
+/**
+ * BOTÓN PREMIUM DE LANZAMIENTO.
+ * Diseñado como una tarjeta interactiva de gran tamaño para destacar
+ * la acción principal del administrador: abrir la pantalla pública.
+ */
+.btn-gramola-launch {
+  background: linear-gradient(135deg, #1DB954 0%, #117a37 100%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  padding: 24px 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center; 
+  gap: 24px;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 10px 30px -5px rgba(29, 185, 84, 0.4), inset 0 1px 0 rgba(255,255,255,0.2);
+  width: 100%; 
+  max-width: none;
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+  color: #fff;
+}
+
+/* Efecto de brillo al pasar el ratón */
+.btn-gramola-launch::after {
+  content: "";
+  position: absolute;
+  top: 0; left: -100%; width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: 0.5s;
+}
+
+.btn-gramola-launch:hover::after {
+  left: 100%;
+}
+
+.btn-gramola-launch:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 20px 50px -10px rgba(29, 185, 84, 0.6);
+  background: linear-gradient(135deg, #1ed760 0%, #1db954 100%);
+  border-color: #fff;
+}
+
+.btn-gramola-launch:active {
+  transform: scale(0.98);
+}
+.icon-wrapper {
+  background: rgba(0,0,0,0.2);
+  padding: 12px;
+  border-radius: 50%;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.text-wrapper {
+  display: flex; 
+  flex-direction: column; 
+  text-align: left;
+}
+
+.main-text {
+  font-size: 1.4rem; 
+  font-weight: 900; 
+  color: #fff; 
+  letter-spacing: 1px;
+}
+
+.sub-text {
+  font-size: 0.9rem; 
+  color: rgba(255,255,255,0.9); 
+  font-weight: 500;
+}
+
+
+/* --- 3. PANELES Y LISTAS (CARDS & COLLECTIONS) --- */
+.stack-container {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+/* --- PANELES GENÉRICOS --- */
+.glass-panel {
+  background: var(--panel-bg);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: var(--glass-shadow);
+}
+
+.panel-header {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 15px;
+}
+.panel-header h3 { margin: 0; font-size: 1.1rem; color: #fff; font-weight: 700; }
+
+.subtitle-text { font-size: 0.9rem; color: var(--text-muted); margin: 4px 0 0 0; }
+.highlight { color: var(--primary); font-weight: 600; }
+.text-warning { color: #f59e0b; font-style: italic; }
+
+.btn-icon-refresh {
+  background: none; border: none; color: var(--primary); cursor: pointer;
+  transition: transform 0.4s ease; padding: 5px;
+}
+.btn-icon-refresh:hover { transform: rotate(180deg); color: #fff; }
+
+/* LISTAS HORIZONTALES CON SCROLL: Para navegar entre dispositivos o playlists */
+.horizontal-list {
+  display: flex;
+  gap: 15px;
+  overflow-x: auto;
+  padding-bottom: 5px;
+}
+
+/* TARJETAS DE DISPOSITIVOS */
+.device-card {
+  flex: 1; 
+  min-width: 200px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid transparent;
+  border-radius: 12px;
+  padding: 15px;
+  display: flex; align-items: center; gap: 15px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.device-card:hover { background: rgba(255,255,255,0.08); transform: translateY(-2px); }
+.device-card.active {
+  background: linear-gradient(135deg, rgba(29, 185, 84, 0.15), rgba(0,0,0,0));
+  border-color: var(--primary);
+  box-shadow: 0 4px 15px rgba(29, 185, 84, 0.1);
+}
+
+.device-icon-wrapper { font-size: 1.5rem; display: flex; align-items: center; }
+.device-info { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.device-name { font-weight: 700; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.device-type { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; margin-top: 2px; }
+
+.status-indicator {
+  width: 8px; height: 8px; border-radius: 50%; background: #333;
+}
+.device-card.active .status-indicator {
+  background: var(--primary); box-shadow: 0 0 8px var(--primary);
+}
+
+.no-data.horizontal {
+  width: 100%; text-align: center; color: var(--text-muted); font-style: italic; padding: 10px;
+}
+
+/* --- ESTILOS PLAYLISTS (Horizontal) --- */
+.playlist-list {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  /* Barra de scroll fina */
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary) transparent;
+}
+
+/* TARJETAS DE PLAYLIST (MÚSICA DE FONDO) */
+.playlist-card {
+  flex: 0 0 auto;
+  width: 140px; /* Tamaño fijo para tarjetas cuadradas */
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.playlist-card:hover {
+  transform: translateY(-5px);
+}
+
+.pl-img-container {
+  width: 140px;
+  height: 140px;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 10px;
+  position: relative;
+  background: #282828;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.pl-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pl-placeholder {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 3rem; color: #555;
+}
+
+/* Efecto de play al pasar el ratón sobre la playlist */
+.pl-overlay {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.playlist-card:hover .pl-overlay {
+  opacity: 1;
+}
+
+.play-icon {
+  font-size: 2rem;
+  color: #fff;
+  filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));
+}
+
+.pl-info {
+  text-align: left;
+}
+
+.pl-name {
+  display: block;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #fff;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  margin-bottom: 2px;
+}
+
+.pl-tracks {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* Estilos para IMÁGENES de canciones */
+.card-art {
+  width: 120px; height: 120px;
+  background: #282828;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 8px; /* Bordes redondeados */
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  overflow: hidden; /* Para recortar la imagen */
+}
+.track-cover-img {
+  width: 100%; height: 100%; object-fit: cover;
+}
+.music-note { font-size: 2.5rem; }
+
+.card-content { width: 100%; display: flex; flex-direction: column; gap: 5px; align-items: center;}
+
+.track-name { font-weight: 700; font-size: 1rem; color: #fff; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.track-artist { font-size: 0.85rem; color: var(--text-muted); width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 10px;}
+
+.btn-play {
+  width: 100%;
+  background: transparent; border: 1px solid var(--primary); color: var(--primary);
+  padding: 8px; border-radius: 8px; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center;
+  transition: all 0.2s;
+}
+.btn-play:hover { background: var(--primary); color: #000; box-shadow: 0 0 15px var(--primary-glow); }
+.btn-play .action-text { font-weight: 800; font-size: 0.85rem; text-transform: uppercase; }
+.btn-play .price-tag { font-size: 0.7rem; opacity: 0.8; }
+
+/* SONANDO AHORA (NUEVO ESTILO) */
+.now-playing-card {
+    /* Usamos var(--panel-bg) para igualar el color con los otros paneles */
+    background: var(--panel-bg);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--primary);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 20px;
+    animation: fadeIn 0.5s ease-out;
+    box-shadow: var(--glass-shadow);
+}
+.np-header {
+    font-size: 0.75rem; font-weight: 800; letter-spacing: 1.5px;
+    color: var(--primary); margin-bottom: 10px; text-transform: uppercase;
+}
+.np-content { display: flex; align-items: center; gap: 15px; }
+.np-img-wrapper {
+    width: 60px; height: 60px; border-radius: 6px; overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5); background: #282828;
+    display: flex; align-items: center; justify-content: center;
+}
+.np-cover { width: 100%; height: 100%; object-fit: cover; }
+.music-note-small { font-size: 1.5rem; }
+.np-info { flex: 1; overflow: hidden; }
+.np-title { display: block; font-weight: 700; color: #fff; font-size: 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.np-artist { display: block; font-size: 0.85rem; color: #b3b3b3; margin-bottom: 5px; }
+.np-status {
+    font-size: 0.75rem; color: var(--primary); display: flex; align-items: center; gap: 6px;
+    font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+}
+.np-status.paused { color: #b3b3b3; }
+
+/* Animación de barras */
+.anim-bars { display: flex; gap: 2px; align-items: flex-end; height: 10px; }
+.anim-bars span { width: 2px; background: var(--primary); animation: equalize 0.8s infinite; }
+.anim-bars span:nth-child(2) { animation-delay: 0.2s; }
+.anim-bars span:nth-child(3) { animation-delay: 0.4s; }
+
+/* --- ANIMACIONES --- */
+.animate-fade-in { animation: fadeIn 0.8s ease-out; }
+.animate-pop-in { animation: popIn 0.4s ease-out backwards; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes popIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.playing-anim { display: flex; gap: 2px; height: 12px; align-items: flex-end; }
+.playing-anim span { width: 3px; background: var(--primary); animation: equalize 1s infinite; }
+.playing-anim span:nth-child(2) { animation-delay: 0.2s; height: 60%; }
+.playing-anim span:nth-child(3) { animation-delay: 0.4s; height: 30%; }
+@keyframes equalize { 0% { height: 10%; } 50% { height: 100%; } 100% { height: 10%; } }

@@ -1,0 +1,110 @@
+<!-- 
+  VISTA DE INICIO DE SESIÓN (LOGIN).
+  Esta plantilla gestiona el acceso de los propietarios de bares al sistema.
+  Se divide en dos estados principales:
+  1. Formulario de credenciales (Email y Contraseña).
+  2. Confirmación visual de la firma digital una vez autenticado.
+-->
+
+<div class="login-container">
+  
+  <!-- Fondo decorativo animado -->
+  <div class="background-overlay"></div>
+
+  <div class="login-card">
+    
+    <!-- CABECERA RESALTADA: Identidad de la aplicación -->
+    <div class="card-header">
+      <div class="icon-circle">
+        <!-- Icono de Música/Ondas -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 18V5l12-2v13"></path>
+          <circle cx="6" cy="18" r="3"></circle>
+          <circle cx="18" cy="16" r="3"></circle>
+        </svg>
+      </div>
+      <h2>INICIO DE SESIÓN</h2>
+      <p class="subtitle">La Gramola</p>
+    </div>
+
+    <!-- BLOQUE 1: FORMULARIO LOGIN -->
+    <div *ngIf="!signatureImage" class="animate-fade-in">
+      
+      <!-- Mensajes de Estado -->
+      <div *ngIf="err" class="alert error">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        <span>{{ err }}</span>
+      </div>
+      <div *ngIf="msg" class="alert success">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        <span>{{ msg }}</span>
+      </div>
+
+      <form (ngSubmit)="entrar()" #f="ngForm" novalidate>
+        
+        <!-- CAMPO: EMAIL -->
+        <div class="input-group">
+          <label for="email">Email del Establecimiento</label>
+          <div class="input-wrapper">
+            <!-- Icono Email -->
+            <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+            <input id="email" type="email" name="email" [(ngModel)]="email" required placeholder="ejemplo@bar.com" autocomplete="username"/>
+          </div>
+        </div>
+
+        <!-- CAMPO: CONTRASEÑA -->
+        <div class="input-group">
+          <label for="pwd">Contraseña</label>
+          <div class="input-wrapper">
+            <!-- Icono Candado -->
+            <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            <input id="pwd" type="password" name="pwd" [(ngModel)]="pwd" required placeholder="••••••••" autocomplete="current-password"/>
+          </div>
+        </div>
+
+        <!-- ACCESO SECUNDARIO: Recuperación de contraseña -->
+        <div class="form-footer">
+          <a routerLink="/forgot-password" class="forgot-link">¿Olvidaste tu contraseña?</a>
+        </div>
+
+        <!-- BOTÓN DE ACCIÓN: Autenticación -->
+        <button class="btn-primary" type="submit" [disabled]="loading">
+          <span *ngIf="!loading">Acceder</span>
+          <span *ngIf="loading" class="spinner"></span>
+        </button>
+      </form>
+
+      <!-- ENLACE DE REGISTRO: Para nuevos establecimientos -->
+      <div class="register-link">
+        ¿Nuevo aquí? <a routerLink="/register">Crea tu cuenta</a>
+      </div>
+    </div>
+
+    <!-- BLOQUE 2: CONFIRMACIÓN DE FIRMA -->
+    <div *ngIf="signatureImage" class="animate-fade-in signature-block">
+      <div class="signature-header">
+        <div class="check-icon">✓</div>
+        <h3>Identidad Verificada</h3>
+      </div>
+      
+      <!-- Visualización de la firma manuscrita guardada en el registro -->
+      <div class="signature-display">
+        <p class="signature-label">Firma del Propietario:</p>
+        <div class="signature-img-container">
+          <img [src]="signatureImage" alt="Firma Digital Recuperada" />
+        </div>
+      </div>
+
+      <p class="info-text">
+        Todo listo. Conéctate a Spotify para empezar la música.
+      </p>
+
+      <!-- BOTÓN SPOTIFY: Inicia el flujo OAuth 2.0 -->
+      <button class="btn-spotify" (click)="redirectToSpotify()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+        Conectar con Spotify
+      </button>
+    </div>
+
+  </div>
+</div>

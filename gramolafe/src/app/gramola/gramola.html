@@ -1,0 +1,167 @@
+<!-- 
+  VISTA PÚBLICA DE LA GRAMOLA.
+  Esta plantilla está diseñada para ser mostrada en una pantalla pública del bar.
+  Permite a los clientes buscar canciones, ver qué está sonando y consultar 
+  la cola de reproducción actual.
+-->
+
+<div class="music-page">
+  
+  <!-- Fondo con imagen local -->
+  <div class="background-overlay"></div>
+
+  <!-- LAYOUT PRINCIPAL -->
+  <div class="main-layout animate-fade-in">
+    
+<!-- 1. HEADER CON CONTROLES (LOGO IZQUIERDA - BOTONES DERECHA) -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="logo-icon pulse-anim">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"></path><path d="M12 2a15 15 0 0 1 9 9M12 2a15 15 0 0 0-9 9"></path></svg>
+        </div>
+        <h1>La Gramola</h1>
+      </div>
+
+      <!-- CONTROLES DE USUARIO -->
+      <div class="user-controls">
+        <!-- Volver al Panel -->
+        <button (click)="backToManager()" class="btn-back" title="Volver al Panel de Gestión">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+            <span class="btn-text">Panel</span>
+        </button>
+
+        <div class="v-divider"></div>
+
+        <!-- Cerrar Sesión -->
+        <button (click)="logout()" class="btn-logout" title="Cerrar Sesión">
+            <span class="logout-text">Salir</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- MENSAJES (Notificaciones) -->
+    <div *ngIf="errorMsg" class="alert-banner" style="border-color: #ef4444; background: rgba(220,38,38,0.2);">
+      <div class="alert-icon">⚠️</div>
+      <span>{{ errorMsg }}</span>
+    </div>
+    
+    <div *ngIf="successMsg" class="alert-banner success-banner animate-fade-in">
+      <div class="alert-icon">🎉</div>
+      <span>{{ successMsg }}</span>
+    </div>
+
+    <!-- CONTENEDOR DE CONTENIDO -->
+    <div class="stack-container">
+
+      <!-- 2. BÚSQUEDA Y RESULTADOS -->
+      <section class="search-section">
+        <div class="search-hero">
+            <h2>¿Qué música quieres escuchar?</h2>
+            <div class="search-bar glow-effect">
+              <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              <input 
+                type="text" 
+                [(ngModel)]="searchQuery" 
+                (keyup.enter)="searchTracks()"
+                placeholder="Busca canciones, artistas o álbumes..." 
+              />
+              <button (click)="searchTracks()" class="btn-search">BUSCAR</button>
+            </div>
+        </div>
+
+        <!-- Área de Resultados -->
+        <div class="results-area" *ngIf="loading || searchResults.length > 0">
+          <div *ngIf="loading" class="loading-container">
+            <div class="spinner"></div> 
+            <span>Conectando con Spotify...</span>
+          </div>
+
+          <!-- Grid de tarjetas de canciones -->
+          <div *ngIf="searchResults.length > 0" class="track-grid">
+            <div class="track-card animate-pop-in" *ngFor="let track of searchResults">
+              <!-- IMAGEN DE LA CANCIÓN -->
+              <div class="card-art">
+                <img *ngIf="track.image" [src]="track.image" alt="Cover" class="track-cover-img">
+                <span *ngIf="!track.image" class="music-note">🎵</span>
+              </div>
+
+              <div class="card-content">
+                <div class="track-name" title="{{track.name}}">{{ track.name }}</div>
+                <div class="track-artist" title="{{track.artist}}">{{ track.artist }}</div>
+                <!-- Acción de pago: redirige a la pasarela -->
+                <button (click)="addToQueue(track.id)" class="btn-play">
+                  <span class="action-text">AÑADIR</span>
+                  <span class="price-tag">Pagar 1,00€</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. PANEL DE REPRODUCCIÓN Y COLA
+           Muestra el estado actual del local y los próximos temas.
+      -->
+      <section class="panel glass-panel full-width-panel queue-section">
+
+        <!-- Tarjeta Sonando Ahora -->
+        <div class="now-playing-card" *ngIf="nowPlaying">
+            <div class="np-header">SONANDO AHORA</div>
+            <div class="np-content">
+                <div class="np-img-wrapper">
+                    <img [src]="nowPlaying.image" alt="Cover" class="np-cover" *ngIf="nowPlaying.image">
+                    <span class="music-note-small" *ngIf="!nowPlaying.image">🎵</span>
+                </div>
+                <div class="np-info">
+                    <span class="np-title">{{ nowPlaying.name }}</span>
+                    <span class="np-artist">{{ nowPlaying.artist }}</span>
+                    <!-- Animación de ecualizador visual si hay música activa -->
+                    <div class="np-status" *ngIf="nowPlaying.isPlaying">
+                        <span class="anim-bars"><span></span><span></span><span></span></span> Reproduciendo
+                    </div>
+                    <div class="np-status paused" *ngIf="!nowPlaying.isPlaying">⏸ Pausado</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-header">
+           <div class="ph-left">
+             <h3>Cola de Reproducción</h3>
+             <span class="queue-badge">{{ queue.length }} Tracks</span>
+           </div>
+        </div>
+        
+        <!-- LISTADO DE LA COLA: Canciones que sonarán a continuación -->
+        <div class="queue-list" *ngIf="queue.length > 0; else emptyQueue">
+          <div class="queue-row" *ngFor="let track of queue; let i = index">
+            <div class="q-index">
+                <span class="number">#{{ i + 1 }}</span>
+            </div>
+            <!-- IMAGEN EN LA COLA -->
+            <div class="queue-img-wrapper" *ngIf="track.image">
+                <img [src]="track.image" alt="Cover" class="queue-cover-img">
+            </div>
+            <div class="q-info">
+              <span class="q-name">{{ track.name }}</span>
+              <span class="q-artist">{{ track.artist }}</span>
+            </div>
+            <div class="q-status">
+                <span class="status-tag">En espera</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Estado vacío de la cola para animar a los clientes a participar -->
+        <ng-template #emptyQueue>
+            <div class="empty-state">
+                <div class="empty-icon">💿</div>
+                <p>La cola está vacía.</p>
+                <small>¡Busca tu canción favorita arriba y sé el primero!</small>
+            </div>
+        </ng-template>
+      </section>
+
+    </div>
+  </div>
+</div>

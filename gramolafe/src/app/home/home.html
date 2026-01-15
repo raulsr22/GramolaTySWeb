@@ -1,0 +1,40 @@
+<!-- 
+  VISTA DE PORTADA (HOME).
+  Esta plantilla representa el punto de entrada principal para los usuarios.
+  Su objetivo es presentar la "La Gramola" y ofrecer las opciones 
+  principales de registro e inicio de sesión con una estética limpia y moderna.
+-->
+
+<div class="home-container">
+  
+  <!-- Fondo decorativo (Misma imagen que en las otras páginas) -->
+  <div class="background-overlay"></div>
+
+  <div class="content-wrapper animate-fade-in">
+    
+    <!-- Logotipo / Icono Principal -->
+    <div class="logo-container floating-animation">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="main-icon">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 14.5c-2.49 0-4.5-2.01-4.5-4.5S9.51 7.5 12 7.5s4.5 2.01 4.5 4.5-2.01 4.5-4.5 4.5zm0-5.5c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1z"/>
+      </svg>
+    </div>
+
+    <!-- Textos de Bienvenida -->
+    <h1 class="title">La Gramola</h1>
+    <p class="subtitle">La música que tú eliges, el ambiente que tú creas.</p>
+
+    <!-- Botón de Acción Principal -->
+    <div class="actions">
+      <a routerLink="/register" class="btn-start">
+        <span>Empezar</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="arrow-icon"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+      </a>
+      
+      <!-- Enlace secundario para usuarios con cuenta existente -->
+      <p class="login-hint">
+        ¿Ya tienes un local? <a routerLink="/login">Inicia Sesión</a>
+      </p>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,360 @@
+/**
+ * ESTILOS PARA EL COMPONENTE DE PAGOS.
+ * * Define la interfaz de la pasarela de pagos, manteniendo la coherencia 
+ * con el diseño de "La Gramola" y adaptando los elementos dinámicos de 
+ * Stripe (Iframes) para que se integren visualmente en la tarjeta.
+ */
+
+/* --- VARIABLES DE DISEÑO--- */
+:host {
+  --primary-color: #1DB954; 
+  --primary-hover: #1ed760;
+  /* Fondo "Foco de Escenario" */
+  --bg-gradient: radial-gradient(circle at 50% -20%, #1db954 0%, #121212 85%);
+  
+  --text-main: #1f2937;
+  --text-muted: #6b7280;
+  --error-color: #ef4444;
+  --success-color: #15803d;
+}
+
+/* --- CONTENEDOR PRINCIPAL --- 
+ * Centra la tarjeta de pagos y asegura que ocupe todo el alto de pantalla.
+*/
+.payments-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  position: relative;
+  background: var(--bg-gradient);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  overflow: hidden;
+}
+
+/* --- FONDO DECORATIVO ---
+ * Utiliza la imagen 'fondoPagos.jpg' con filtros de desaturación 
+ * para aportar profundidad sin distraer durante el proceso crítico de pago.
+*/
+.background-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('../../assets/fondoPagos.jpg');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.3;
+  filter: grayscale(100%) contrast(120%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* --- TARJETA CENTRAL --- */
+.payments-card {
+  width: 100%;
+  max-width: 500px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 20px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  padding: 40px;
+  z-index: 10;
+  position: relative;
+  overflow: hidden; /* Para que la cabecera respete los bordes */
+}
+
+/* --- CABECERA RESALTADA ---
+ * Aplica un degradado lineal oscuro para identificar la sección de pagos.
+*/
+.card-header {
+  background: linear-gradient(to right, #191414, #1DB954);
+  /* Márgenes negativos para ocupar todo el ancho */
+  margin: -40px -40px 30px -40px;
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: white;
+  border-bottom: 4px solid var(--primary-color);
+}
+
+.icon-circle {
+  width: 60px;
+  height: 60px;
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.card-header h2 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.subtitle {
+  margin: 6px 0 0;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 15px;
+  font-weight: 500;
+}
+
+/* --- SELECCIÓN DE SUSCRIPCIÓN --- */
+.payment-options {
+  transition: opacity 0.3s;
+}
+
+.payment-options.dimmed {
+  opacity: 0.5;
+  pointer-events: none; /* Desactiva clics si ya se mostró el formulario */
+}
+
+.bono-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+/* TARJETA DE PLAN INDIVIDUAL */
+.bono-card {
+  position: relative;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 15px;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* Estado seleccionado del plan */
+.bono-card.active {
+  border-color: var(--primary-color);
+  background-color: #f0fdf4;
+  box-shadow: 0 4px 12px rgba(29, 185, 84, 0.15);
+  transform: translateY(-2px);
+}
+
+.hidden-radio {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.bono-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.price {
+  font-size: 24px;
+  font-weight: 800;
+  color: #121212;
+}
+
+.type {
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.details {
+  font-size: 12px;
+  color: var(--primary-color);
+  font-weight: 700;
+}
+
+/* Etiqueta de recomendación (ej: Plan Anual) */
+.badge {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--primary-color);
+  color: #000;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 4px 8px;
+  border-radius: 10px;
+  text-transform: uppercase;
+}
+
+.check-mark {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  color: var(--primary-color);
+  font-weight: bold;
+}
+
+/* --- BOTÓN CONTINUAR --- */
+.btn-primary {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 50px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  background-color: var(--primary-color);
+  color: #000;
+  transition: all 0.2s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--primary-hover);
+  transform: scale(1.02);
+  box-shadow: 0 8px 20px rgba(29, 185, 84, 0.4);
+}
+
+.btn-primary:disabled {
+  background-color: #e5e7eb;
+  color: #9ca3af;
+  cursor: wait;
+}
+
+/* --- FORMULARIO STRIPE --- */
+.animate-slide-up {
+  animation: slideUp 0.4s ease-out forwards;
+}
+
+/* --- ANIMACIONES E INDICADORES --- */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 20px 0 15px 0;
+}
+.divider::before, .divider::after {
+  content: ''; flex: 1; border-bottom: 1px solid #e5e7eb;
+}
+.divider span {
+  padding: 0 10px; font-size: 12px; color: var(--text-muted); font-weight: 700; text-transform: uppercase;
+}
+
+/* --- FORMULARIO DE STRIPE --- */
+.stripe-container {
+  padding: 14px;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  background-color: #fff;
+  margin-bottom: 15px;
+  transition: border-color 0.2s;
+}
+
+.stripe-container:hover {
+  border-color: #d1d5db;
+}
+
+.error-msg {
+  background-color: #fef2f2;
+  color: #991b1b;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 15px;
+  border: 1px solid #fee2e2;
+}
+
+/* Botón Final Pagar */
+.btn-spotify {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #333;
+  border-radius: 50px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  background-color: #121212;
+  color: white;
+  transition: all 0.2s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn-spotify:hover:not(:disabled) {
+  background-color: #000;
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+  transform: scale(1.02);
+}
+
+.btn-spotify:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.result-message {
+  margin-top: 15px;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.success {
+  background-color: #f0fdf4;
+  color: #15803d;
+  border: 1px solid #dcfce7;
+}
+
+.hidden { display: none; }
+
+/* Spinners de carga */
+.spinner {
+  width: 16px; height: 16px;
+  border: 2px solid rgba(0,0,0,0.1);
+  border-radius: 50%;
+  border-top-color: #000;
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
+}
+
+.spinner-light {
+  width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,0.2);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }

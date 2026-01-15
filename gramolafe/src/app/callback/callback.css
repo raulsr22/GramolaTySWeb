@@ -1,0 +1,91 @@
+/**
+ * ESTILOS PARA EL PROCESO DE VINCULACIÓN (SPOTIFY CALLBACK).
+ * * Este archivo define la apariencia de la pantalla intermedia que ve el usuario
+ * mientras el sistema intercambia el código de autorización por un token real.
+ * Mantiene la coherencia visual (colores y tipografía) con el login y registro.
+ */
+
+/* CONTENEDOR PRINCIPAL: Estilo base con degradado suave */
+.page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px 16px;
+  box-sizing: border-box;
+  background: radial-gradient(circle at top, #f0f4ff, #e2e8f0);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+/* TARJETA DE ESTADO: Panel centralizado para los mensajes de verificación */
+.card {
+  width: 100%;
+  max-width: 420px;
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 14px 40px rgba(15, 23, 42, 0.15);
+  padding: 24px 24px 28px;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+/* TÍTULOS: Resaltado de la acción actual */
+h1 {
+  margin: 0 0 8px;
+  font-size: 26px;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* SUBTÍTULO: Texto de apoyo informativo */
+.subtitle {
+  margin: 0 0 20px;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+/** * MENSAJES DE ESTADO (RETROALIMENTACIÓN).
+ * Se utilizan para informar del éxito o error de la vinculación con Spotify.
+*/
+.msg {
+  padding: 12px;
+  border-radius: 8px;
+  margin-top: 15px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* ÉXITO: Color verde para confirmar que el token se guardó correctamente */
+.msg.ok {
+  background-color: #d1fae5; /* Verde muy claro */
+  color: #065f46; /* Verde oscuro */
+}
+
+/* ERROR: Color rojo para fallos en la autorización */
+.msg.error {
+  background-color: #fee2e2; /* Rojo muy claro */
+  color: #991b1b; /* Rojo oscuro */
+}
+
+/**
+ * INDICADOR DE CARGA (SPINNER).
+ * Animación circular para indicar que el backend está procesando los datos.
+ */
+.spinner {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  border-top-color: #3b82f6;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+  margin-right: 8px;
+}
+
+/* DEFINICIÓN DE LA ANIMACIÓN DE ROTACIÓN */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

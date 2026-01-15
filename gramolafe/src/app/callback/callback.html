@@ -1,0 +1,45 @@
+<!-- 
+  VISTA DE RETORNO DE SPOTIFY (CALLBACK).
+  Esta plantilla gestiona la experiencia visual del usuario mientras el sistema 
+  valida el código de autorización devuelto por Spotify y lo intercambia 
+  por un token de acceso seguro.
+-->
+
+<div class="page">
+  <div class="card">
+    <!-- Títulos de la cabecera del proceso -->
+    <h1>Autorización de Spotify</h1>
+    <p class="subtitle">
+      Procesando el resultado de la solicitud de permisos.
+    </p>
+
+    <!-- 
+      ESTADO 1: PROCESANDO (LOADING).
+      Se muestra mientras 'loading' es true y no hay errores. 
+      Utiliza el componente CSS '.spinner' para indicar actividad.
+    -->
+    <p *ngIf="loading && !errorMessage" class="msg ok">
+      <span class="spinner"></span> {{ statusMessage }}
+    </p>
+
+    <!-- 
+      ESTADO 2: ÉXITO.
+      Se muestra cuando el intercambio del token ha finalizado correctamente.
+    -->
+    <p *ngIf="!loading && !errorMessage" class="msg ok">
+      ✅ {{ statusMessage }}
+    </p>
+
+    <!-- 
+      ESTADO 3: ERROR.
+      Se muestra si ocurre algún fallo en la comunicación o la validación.
+      Incluye un enlace de retorno al login para que el usuario pueda reintentar.
+    -->
+    <p *ngIf="errorMessage" class="msg error">
+      ❌ {{ errorMessage }}
+      <br /><br />
+      <!-- Enlace directo al componente de Login mediante el router de Angular -->
+      <a routerLink="/login">Volver al Login</a>
+    </p>
+  </div>
+</div>

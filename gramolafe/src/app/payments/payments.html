@@ -1,0 +1,105 @@
+<!-- 
+  VISTA DE PROCESAMIENTO DE PAGOS (INTEGRACIÓN CON STRIPE).
+  Esta plantilla gestiona dos flujos financieros distintos:
+  1. Suscripciones para el bar (Mensual/Anual) tras el registro.
+  2. Pagos por canción para los clientes desde la Gramola.
+  
+  Utiliza elementos dinámicos de Stripe para garantizar la seguridad 
+  y el cumplimiento de la normativa.
+-->
+
+<div class="payments-container">
+  
+  <!-- Fondo decorativo -->
+  <div class="background-overlay"></div>
+
+  <div class="payments-card animate-fade-in">
+    
+    <!-- CABECERA: Título dinámico según el contexto del pago -->
+    <header class="card-header">
+      <div class="icon-circle">
+        <!-- Icono representativo de tarjeta de crédito -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+      </div>
+      
+      <!-- Títulos condicionales según el tipo de operación -->
+      <h2 *ngIf="paymentType === 'subscription'">Suscripciones</h2>
+      <h2 *ngIf="paymentType === 'song'">Pagar Canción</h2>
+      
+      <p class="subtitle" *ngIf="paymentType === 'subscription'">Gestiona tu acceso desde la base de datos</p>
+      <p class="subtitle" *ngIf="paymentType === 'song'">Abona el importe para añadir tu canción a la cola</p>
+    </header>
+
+    <div class="content-wrapper">
+        
+      <!-- 
+        SECCIÓN 1: SELECCIÓN DE PLAN (MODO SUSCRIPCIÓN).
+        Este bloque solo se muestra para los dueños de bares. Los precios y 
+        descripciones se recuperan dinámicamente de la base de datos para 
+        evitar valores fijos en el código.
+      -->
+      <div class="payment-options" *ngIf="paymentType === 'subscription' && !showCardForm">
+          
+          <div class="bono-grid">
+              <!-- Iteramos sobre los planes reales de la base de datos -->
+              <ng-container *ngFor="let plan of availablePlans">
+                <label 
+                  class="bono-card" 
+                  [class.active]="selectedPlanId === plan.id" 
+                  [class.recommended]="plan.id === 'ANNUAL'"
+                  *ngIf="plan.id !== 'SONG'"
+                >
+                    <!-- Indicador visual para el plan con mejor oferta -->
+                    <div class="badge" *ngIf="plan.id === 'ANNUAL'">Mejor Valor</div>
+                    <input type="radio" name="bono" [value]="plan.id" [(ngModel)]="selectedPlanId" class="hidden-radio">
+                    
+                    <div class="bono-content">
+                        <span class="price">{{ plan.price }}€</span>
+                        <span class="type">{{ plan.description }}</span>
+                    </div>
+
+                    <!-- Marca de verificación visual al seleccionar -->
+                    <div class="check-mark" *ngIf="selectedPlanId === plan.id">✓</div>
+                </label>
+              </ng-container>
+          </div>
+
+          <!-- BOTÓN DE INICIO DE TRANSACCIÓN: Contacta con el backend para preparar Stripe -->
+          <button type="button" class="btn-primary" (click)="prepay()" [disabled]="loading || availablePlans.length === 0">
+              <span *ngIf="!loading">Continuar al Pago</span>
+              <span *ngIf="loading" class="spinner"></span>
+          </button>
+      </div>
+
+      <!-- SECCIÓN 2: FORMULARIO STRIPE -->
+      <div id="payment-form" [style.display]="showCardForm ? 'block' : 'none'" class="animate-slide-up">
+          
+          <div class="divider">
+            <span>Datos de Tarjeta</span>
+          </div>
+          
+          <div id="card-element" class="stripe-container"></div>
+
+          <!-- GESTIÓN DE ERRORES DE TARJETA: Validaciones en tiempo real (fondos, caducidad, etc.) -->
+          <p id="card-error" class="error-msg" role="alert" *ngIf="cardError">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+              {{ cardError }}
+          </p>
+
+          <!-- BOTÓN FINAL DE CONFIRMACIÓN -->
+          <button id="submit" class="btn-spotify" type="button" (click)="payWithCard()" [disabled]="processing">
+              <span *ngIf="!processing">Confirmar Pago</span>
+              <div class="spinner-light" *ngIf="processing"></div>
+              <span *ngIf="processing" style="margin-left: 8px">Procesando...</span>
+          </button>
+
+          <!-- FEEDBACK DE ÉXITO: Confirmación visual previa a la redirección -->
+          <p class="result-message success" *ngIf="succeeded">
+             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+             ¡Pago completado con éxito!
+          </p>
+      </div>
+
+    </div>
+  </div>
+</div>

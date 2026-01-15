@@ -1,0 +1,160 @@
+<!-- 
+  VISTA DE ADMINISTRACIÓN DEL BAR (PANEL DE GESTIÓN).
+  Esta plantilla representa la "consola de control" del establecimiento.
+  Permite al dueño configurar el dispositivo de sonido, seleccionar la música 
+  de fondo y lanzar la interfaz pública para los clientes.
+-->
+
+<div class="music-page">
+  
+  <!-- Fondo con imagen local y efectos -->
+  <div class="background-overlay"></div>
+
+  <!-- LAYOUT PRINCIPAL -->
+  <div class="main-layout animate-fade-in">
+    
+        <!-- HEADER CENTRADO CON TÍTULO EN MAYÚSCULAS -->
+        <header class="app-header centered-header">
+          <div class="brand">
+            <div class="logo-icon pulse-anim">
+                <!-- Icono de Gramola / Vinilo representativo -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <circle cx="12" cy="12" r="2"></circle>
+                  <path d="M12 2v4"></path>
+                  <path d="M12 18v4"></path>
+                  <path d="M2 12h4"></path>
+                  <path d="M18 12h4"></path>
+                  <path d="M4.93 4.93l2.83 2.83"></path>
+                  <path d="M16.24 16.24l2.83 2.83"></path>
+                  <path d="M4.93 19.07l2.83-2.83"></path>
+                  <path d="M16.24 7.76l2.83-2.83"></path>
+                </svg>
+            </div>
+            <h1>PANEL DE GESTIÓN</h1>
+          </div>
+        </header>
+
+
+    <!-- GESTIÓN DE ALERTAS: Notificaciones de error (ej: fallo de conexión con Spotify) -->
+    <div *ngIf="errorMsg" class="alert-banner">
+      <div class="alert-icon">⚠️</div>
+      <span>{{ errorMsg }}</span>
+    </div>
+
+    <!-- BOTÓN GRANDE PARA ABRIR GRAMOLA PÚBLICA -->
+    <section class="hero-section">
+        <button routerLink="/gramola" class="btn-gramola-launch">
+            <div class="icon-wrapper">
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
+            </div>
+            <div class="text-wrapper">
+                <span class="main-text">ABRIR GRAMOLA</span>
+                <span class="sub-text">Modo Cliente · Añadir canciones</span>
+            </div>
+        </button>
+    </section>
+
+
+    <!-- CONTENEDOR DE PANELES (STACK VERTICAL) -->
+    <div class="stack-container">
+
+      <!-- 1. DISPOSITIVOS (ANCHO COMPLETO) -->
+      <section class="panel glass-panel full-width-panel devices-section">
+        <div class="panel-header">
+          <div class="ph-left">
+            <h3>Dispositivos Disponibles</h3>
+            <p *ngIf="currentDevice" class="subtitle-text">Conectado a: <span class="highlight">{{ currentDevice.name }}</span></p>
+            <p *ngIf="!currentDevice" class="subtitle-text text-warning">Selecciona uno para empezar</p>
+          </div>
+          <!-- Botón para forzar el refresco de los dispositivos de Spotify -->
+          <button (click)="getDevices()" class="btn-icon-refresh" title="Recargar Lista">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+          </button>
+        </div>
+        
+        <!-- Lista Horizontal de Dispositivos -->
+        <div class="device-list horizontal-list">
+          <div 
+            class="device-card" 
+            *ngFor="let device of devices"
+            [class.active]="currentDevice?.id === device.id"
+            (click)="selectDevice(device)"
+          >
+            <div class="device-icon-wrapper">
+              <span *ngIf="device.type === 'Computer'">💻</span>
+              <span *ngIf="device.type === 'Smartphone'">📱</span>
+              <span *ngIf="device.type !== 'Computer' && device.type !== 'Smartphone'">🔊</span>
+            </div>
+            <div class="device-info">
+              <span class="device-name">{{ device.name }}</span>
+              <span class="device-type">{{ device.type }}</span>
+            </div>
+            <!-- Punto de estado activo -->
+            <div class="status-indicator"></div>
+          </div>
+          
+          <!-- Mensaje de ayuda si no hay dispositivo activo -->
+          <div *ngIf="devices.length === 0" class="no-data horizontal">
+            <p>No se detectan dispositivos. Abre Spotify en tu móvil o PC.</p>
+          </div>
+        </div>
+      </section>
+
+      
+      <!-- 2. MIS PLAYLISTS -->
+      <!-- Solo se muestra si hay playlists cargadas -->
+      <section class="panel glass-panel full-width-panel playlists-section" *ngIf="playlists.length > 0">
+        <div class="panel-header compact-header">
+            <div class="ph-left">
+               <h3>Mis Playlists</h3>
+               <span class="queue-badge">{{ playlists.length }} Listas</span>
+            </div>
+        </div>
+        
+        <!-- Lista Horizontal de Playlists -->
+        <div class="playlist-list horizontal-list">
+            <div class="playlist-card" *ngFor="let pl of playlists" (click)="playPlaylist(pl)">
+                <div class="pl-img-container">
+                    <!-- Imagen de la playlist o placeholder -->
+                    <img *ngIf="pl.images && pl.images.length > 0" [src]="pl.images[0].url" alt="Cover" class="pl-img">
+                    <div *ngIf="!pl.images || pl.images.length === 0" class="pl-placeholder">🎵</div>
+                    
+                    <!-- Overlay de Play al pasar ratón -->
+                    <div class="pl-overlay">
+                        <span class="play-icon">▶</span>
+                    </div>
+                </div>
+                <div class="pl-info">
+                    <span class="pl-name" title="{{pl.name}}">{{ pl.name }}</span>
+                    <span class="pl-tracks">{{ pl.tracks.total }} canciones</span>
+                </div>
+            </div>
+        </div>
+      </section>
+
+      <!-- 3. MONITORIZACIÓN (SONANDO AHORA - Debajo de Playlists) -->
+      <div class="now-playing-card" *ngIf="nowPlaying">
+          <div class="np-header">SONANDO ACTUALMENTE EN EL LOCAL</div>
+          <div class="np-content">
+             <div class="np-img-wrapper">
+                <img [src]="nowPlaying.image" alt="Cover" class="np-cover" *ngIf="nowPlaying.image">
+                <span class="music-note-small" *ngIf="!nowPlaying.image">🎵</span>
+             </div>
+             <div class="np-info">
+                 <span class="np-title" style="font-size: 1.2rem;">{{ nowPlaying.name }}</span>
+                 <span class="np-artist">{{ nowPlaying.artist }}</span>
+                 
+                 <!-- Visualización del estado de reproducción con ecualizador animado -->
+                 <div class="np-status" *ngIf="nowPlaying.isPlaying">
+                    <span class="anim-bars"><span></span><span></span><span></span></span>
+                    Reproduciendo
+                 </div>
+                 <div class="np-status paused" *ngIf="!nowPlaying.isPlaying">⏸ Pausado</div>
+             </div>
+          </div>
+      </div>
+
+    </div>
+  </div>
+</div>
